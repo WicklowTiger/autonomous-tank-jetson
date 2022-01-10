@@ -6,6 +6,9 @@ import sys
 import time
 import importlib.util
 
+from src.SocketSender import SocketSender
+from src.config import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--modeldir', help='Folder the .tflite file is located in',
                     required=True)
@@ -60,6 +63,9 @@ floating_model = (input_details[0]['dtype'] == np.float32)
 frame_rate_calc = 1
 freq = cv2.getTickFrequency()
 
+# Initialize socket
+socket_sender = SocketSender(UDP_IP, UDP_PORT)
+
 # Initialize video stream
 cap = cv2.VideoCapture('src/assets/video.mp4')
 time.sleep(1)
@@ -104,7 +110,7 @@ while cap.isOpened():
             if object_name == "bottle":
                 center_x = int((xmax + xmin) / 2)
                 servo_rotation = int(center_x / 24)  # For 1280px wide frames
-                print("Found target")
+                socket_sender.send_message(f"{servo_rotation}")
                 color = (0, 0, 255)
 
             cv2.rectangle(frame1, (xmin, ymin), (xmax, ymax), color, 2)  # boundary box drawing
