@@ -203,7 +203,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                             color = 1
                         object_center = (xywh[0] + xywh[2] / 2)
                         object_center = round(object_center, 2)
-                        socket_sender.send_message(f"{label} - {object_center}")
+                        socket_sender.send_message(f"DETECTION:{label},{object_center}")
                         annotator.box_label(xyxy, label, color=colors(color, True))
                         if save_crop:
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
